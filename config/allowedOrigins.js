@@ -1,4 +1,5 @@
 const allowedOrigins = [
+  "http://localhost:3000",
   "http://localhost:3000/",
   "https://teckwear.netlify.app/",
   "https://www.teckwear.netlify.app/",

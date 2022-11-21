@@ -14,6 +14,25 @@ const getAllProducts = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
+// @desc Get Single Product
+// @route GET /product/:id
+// @access Public
+const getSingleProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "Product ID required" });
+  }
+
+  const product = await Product.findById(id).lean();
+
+  if (!product) {
+    return res.status(400).json({ message: "Product not found" });
+  }
+
+  res.json(product);
+});
+
 // @desc Create new Product
 // @route POST /product
 // @access Private
@@ -36,8 +55,7 @@ const createProduct = asyncHandler(async (req, res) => {
     !BIproductname ||
     !BIgender ||
     !BIcategory ||
-    !Array.isArray(BIcolor) ||
-    !BIcolor.length ||
+    !BIcolor ||
     !BIqty ||
     !BIprice ||
     !description
@@ -166,4 +184,5 @@ module.exports = {
   createProduct,
   editProduct,
   deleteProduct,
+  getSingleProduct,
 };
