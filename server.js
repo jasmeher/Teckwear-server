@@ -14,6 +14,5 @@ app.get("/", function (req, res) {
 });
 app.use("/user", require("./routes/userRoutes"));
 app.use("/product", require("./routes/productRoutes"));
-app.use("/productalt/:id", require("./routes/productRoutes"));
 
 app.listen(process.env.PORT);

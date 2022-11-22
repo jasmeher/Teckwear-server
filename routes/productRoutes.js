@@ -10,6 +10,6 @@ router
   .patch(productControllers.editProduct)
   .delete(productControllers.deleteProduct);
 
-router.route("/:id").get(productControllers.getSingleProduct);
+router.route("/single/:id").get(productControllers.getSingleProduct);
 
 module.exports = router;

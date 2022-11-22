@@ -43,6 +43,7 @@ const createProduct = asyncHandler(async (req, res) => {
     BIgender,
     BIcategory,
     BIcolor,
+    BIsize,
     BIqty,
     BIprice,
     description,
@@ -56,6 +57,7 @@ const createProduct = asyncHandler(async (req, res) => {
     !BIgender ||
     !BIcategory ||
     !BIcolor ||
+    !BIsize ||
     !BIqty ||
     !BIprice ||
     !description
@@ -77,6 +79,7 @@ const createProduct = asyncHandler(async (req, res) => {
     BIgender,
     BIcategory,
     BIcolor,
+    BIsize,
     BIqty,
     BIprice,
     description,
@@ -104,6 +107,7 @@ const editProduct = asyncHandler(async (req, res) => {
     BIgender,
     BIcategory,
     BIcolor,
+    BIsize,
     BIqty,
     BIprice,
     description,
@@ -118,6 +122,7 @@ const editProduct = asyncHandler(async (req, res) => {
     !BIproductname ||
     !BIgender ||
     !BIcategory ||
+    !BIsize ||
     !Array.isArray(BIcolor) ||
     !BIcolor.length ||
     !BIqty ||
@@ -146,6 +151,7 @@ const editProduct = asyncHandler(async (req, res) => {
   product.BIgender = BIgender;
   product.BIcategory = BIcategory;
   product.BIcolor = BIcolor;
+  product.BIsize = BIsize;
   product.BIqty = BIqty;
   product.BIprice = BIprice;
   product.description = description;

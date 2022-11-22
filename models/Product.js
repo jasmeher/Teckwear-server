@@ -22,6 +22,9 @@ const productSchema = new mongoose.Schema(
     BIcolor: {
       type: String,
     },
+    BIsize: {
+      type: String,
+    },
     BIqty: {
       type: Number,
     },
