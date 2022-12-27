@@ -12,6 +12,7 @@ app.use(cors(corsOptions));
 app.get("/", function (req, res) {
   res.send(`Server is listening on port ${process.env.PORT}`);
 });
+app.use("/auth", require("./routes/authRoutes"));
 app.use("/user", require("./routes/userRoutes"));
 app.use("/product", require("./routes/productRoutes"));
 

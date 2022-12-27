@@ -166,7 +166,7 @@ const editProduct = asyncHandler(async (req, res) => {
 // @route DELETE /product
 // @access Private
 const deleteProduct = asyncHandler(async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
 
   if (!id) {
     return res.status(400).json({ message: "Product ID required" });
