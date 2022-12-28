@@ -15,5 +15,6 @@ app.get("/", function (req, res) {
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/user", require("./routes/userRoutes"));
 app.use("/product", require("./routes/productRoutes"));
+app.use("/order", require("./routes/orderRoutes"));
 
 app.listen(process.env.PORT);
