@@ -13,15 +13,8 @@ const getAllReviews = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "No reviews found" });
   }
 
-  const reviewWithUser = await Promise.all(
-    reviews.map(async (review) => {
-      const user = await User.findById(review.user).lean().exec();
-      return { ...review, user: user.username };
-    })
-  );
-
   const reviewWithProduct = await Promise.all(
-    reviewWithUser.map(async (review) => {
+    reviews.map(async (review) => {
       const product = await Product.findById(review.product).lean().exec();
       return { ...review, product: product.BIproductname };
     })
@@ -40,7 +33,7 @@ const createReview = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All Fields are required" });
   }
 
-  const duplicate = await Review.findOne({ product });
+  const duplicate = await Review.findOne({ user, product });
 
   if (duplicate) {
     return res.status(409).json({ message: "Already Reviewed this product" });
