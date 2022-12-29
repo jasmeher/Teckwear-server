@@ -54,11 +54,6 @@ const createNewOrder = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = {
-  getOrders,
-  createNewOrder,
-};
-
 // @desc update order
 // @route PATCH/order
 // @access Private

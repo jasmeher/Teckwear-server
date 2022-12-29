@@ -16,5 +16,6 @@ app.use("/auth", require("./routes/authRoutes"));
 app.use("/user", require("./routes/userRoutes"));
 app.use("/product", require("./routes/productRoutes"));
 app.use("/order", require("./routes/orderRoutes"));
+app.use("/review", require("./routes/reviewRoutes"));
 
 app.listen(process.env.PORT);
