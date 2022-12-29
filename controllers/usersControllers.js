@@ -131,9 +131,29 @@ const deleteUser = asyncHandler(async (req, res) => {
   res.json(reply);
 });
 
+// @desc Get Single Product
+// @route GET /product/:id
+// @access Public
+const getSingleUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "User ID required" });
+  }
+
+  const user = await User.findById(id).lean();
+
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+  res.json(user);
+});
+
 module.exports = {
   getAllUsers,
   createNewUser,
   updateUser,
   deleteUser,
+  getSingleUser,
 };
