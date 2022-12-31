@@ -6,9 +6,19 @@ const asyncHandler = require("express-async-handler");
 // @access Public
 const getAllProducts = asyncHandler(async (req, res) => {
   const products = await Product.find().lean();
+  const { query } = req;
 
   if (!products?.length) {
     return res.status(400).json({ message: "No Products found!" });
+  }
+  if (query.BIgender !== undefined) {
+    let filteredProducts;
+    for (key in query) {
+      filteredProducts = products.filter(
+        (product) => product.BIgender === query[key]
+      );
+    }
+    return res.json(filteredProducts);
   }
 
   res.json(products);
