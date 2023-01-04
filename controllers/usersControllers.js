@@ -141,10 +141,8 @@ const getSingleUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "User ID required" });
   }
 
-  const user = await User.findOne({ username: id })
-    .select(
-      "-password -isAdmin -active -username -email -createdAt -updatedAt -fname -lname"
-    )
+  const user = await User.findById(id)
+    .select("-password -isAdmin -active ")
     .lean();
 
   if (!user) {

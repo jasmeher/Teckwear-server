@@ -8,24 +8,29 @@ const OrderSchema = new mongoose.Schema(
       ref: "User",
     },
     product: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Products",
+      type: String,
+      get: function (product) {
+        try {
+          return JSON.parse(product);
+        } catch (error) {
+          return product;
+        }
+      },
+      set: function (product) {
+        return JSON.stringify(product);
+      },
     },
-    qty: {
-      type: Number,
-      required: true,
-    },
-    address: {
+    email: {
       type: String,
       required: true,
     },
-    paymentMethod: {
+    stripeSessionId: {
       type: String,
       required: true,
     },
     completed: {
       type: Boolean,
+      required: true,
       default: false,
     },
   },

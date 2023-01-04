@@ -13,6 +13,7 @@ const verifyJwt = (req, res, next) => {
     if (err) return res.status(403).json({ message: "Forbidden" });
     req.user = decoded.UserInfo.username;
     req.isAdmin = decoded.UserInfo.isAdmin;
+    req.id = decoded.UserInfo._id;
     next();
   });
 };

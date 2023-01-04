@@ -3,6 +3,8 @@ const Product = require("../models/Product");
 const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 // @desc get all orders
 // @route GET/order
 // @access Private
@@ -13,78 +15,91 @@ const getOrders = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "No orders found" });
   }
 
-  const orderWithUser = await Promise.all(
-    orders.map(async (order) => {
-      const user = await User.findById(order.user).lean().exec();
-      return { ...order, user: user.username };
-    })
-  );
-
-  const orderWithProduct = await Promise.all(
-    orderWithUser.map(async (order) => {
-      const product = await Product.findById(order.product).lean().exec();
-      return { ...order, product: product.BIproductname };
-    })
-  );
-
-  res.json(orderWithProduct);
+  res.json(orders);
 });
 
 // @desc create new order
 // @route POST/order
 // @access Private
 const createNewOrder = asyncHandler(async (req, res) => {
-  const { user, product, qty, address, paymentMethod } = req.body;
+  const { user, product, email } = req.body;
 
-  if (!user || !product || !qty || !address || !paymentMethod) {
+  if (!user || !product || !email) {
     return res.status(400).json({ message: "All Fields are required" });
   }
+
+  //retrieve product information
+
+  const lineItems = await Promise.all(
+    product.map(async (item) => {
+      const product = await Product.findById(item.id);
+      return {
+        price_data: {
+          currency: "inr",
+          product_data: {
+            name: product.BIproductname,
+            images: product.img,
+          },
+          unit_amount: product.BIprice * 100,
+        },
+        quantity: item.qty,
+      };
+    })
+  );
+
+  //stripe session
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    customer_email: email,
+    mode: "payment",
+    success_url: `http://localhost:3000/?success=true&session={CHECKOUT_SESSION_ID}`,
+    cancel_url: "http://localhost:3000/?cancelled=true",
+    line_items: lineItems,
+    shipping_address_collection: { allowed_countries: ["US", "IN", "CA"] },
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: 0, currency: "inr" },
+          display_name: "Free shipping",
+          delivery_estimate: {
+            minimum: { unit: "business_day", value: 5 },
+            maximum: { unit: "business_day", value: 7 },
+          },
+        },
+      },
+    ],
+  });
+
+  // create order
 
   const order = await Order.create({
     user,
     product,
-    qty,
-    address,
-    paymentMethod,
+    email,
+    stripeSessionId: session.id,
   });
-  if (order) {
-    return res.status(201).json({ message: "New Order Created!" });
-  } else {
-    return res.status(400).json({ message: "Invalid Order Data Recieved" });
-  }
+  return res.json({ id: session.id });
 });
 
 // @desc update order
 // @route PATCH/order
 // @access Private
 const updateOrder = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const { completed, user, product, qty, address, paymentMethod } = req.body;
+  const { sessionId } = req.params;
 
-  if (
-    !id ||
-    typeof completed !== "boolean" ||
-    !user ||
-    !product ||
-    !qty ||
-    !address ||
-    !paymentMethod
-  ) {
-    return res.status(400).json({ message: "All Fields are required" });
+  if (!sessionId) {
+    return res.status(400).json({ message: "Session Id required" });
   }
 
-  const order = await Order.findById(id).exec();
+  const order = await Order.findOne({ stripeSessionId: sessionId }).exec();
 
   if (!order) {
     return res.status(400).json({ message: "Order not found" });
   }
 
-  order.user = user;
-  order.completed = completed;
-  order.product = product;
-  order.qty = qty;
-  order.address = address;
-  order.paymentMethod = paymentMethod;
+  order.completed = true;
 
   const getUser = await User.findById(order.user).lean().exec();
 
