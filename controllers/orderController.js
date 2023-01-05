@@ -100,6 +100,15 @@ const updateOrder = asyncHandler(async (req, res) => {
   }
 
   order.completed = true;
+  const productList = await Promise.all(
+    order.product.map(async (product) => {
+      const item = await Product.findById(product.id).exec();
+      item.sales += product.qty;
+      item.BIqty -= product.qty;
+
+      const updatedItem = await item.save();
+    })
+  );
 
   const getUser = await User.findById(order.user).lean().exec();
 
