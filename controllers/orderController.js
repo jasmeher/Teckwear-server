@@ -9,10 +9,20 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // @route GET/order
 // @access Private
 const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find().lean();
+  const orders = await Order.find().sort("-createdAt").lean();
+  const { query } = req;
 
   if (!orders?.length) {
     return res.status(400).json({ message: "No orders found" });
+  }
+  if (query.userId !== undefined) {
+    let filteredOrders;
+    for (key in query) {
+      filteredOrders = orders.filter(
+        (order) => order.user.toString() === query[key]
+      );
+    }
+    return res.json(filteredOrders);
   }
 
   res.json(orders);

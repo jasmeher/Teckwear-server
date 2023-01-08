@@ -25,7 +25,10 @@ const createNewUser = asyncHandler(async (req, res) => {
 
   // Check if username already exists
 
-  const duplicate = await User.findOne({ username }).lean().exec();
+  const duplicate = await User.findOne({ username })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
 
   if (duplicate) {
     return res.status(409).json({ message: "Duplicate username found" });
@@ -82,7 +85,10 @@ const updateUser = asyncHandler(async (req, res) => {
 
   // Check for duplicate
 
-  const duplicate_u = await User.findOne({ username }).lean().exec();
+  const duplicate_u = await User.findOne({ username })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
   const duplicate_e = await User.findOne({ email }).lean().exec();
   //Allow update to original user
   if ((duplicate_u && duplicate_u?._id.toString() !== id) || duplicate_e) {

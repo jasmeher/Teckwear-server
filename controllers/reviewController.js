@@ -38,7 +38,6 @@ const createReview = asyncHandler(async (req, res) => {
   if (!user || !product || !title || !review || !rating) {
     return res.status(400).json({ message: "All Fields are required" });
   }
-  console.log(user);
   const duplicate = await Review.findOne({ user, product });
 
   if (duplicate) {

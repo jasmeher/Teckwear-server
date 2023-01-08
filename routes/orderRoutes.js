@@ -5,7 +5,7 @@ const verifyJWT = require("../middleware/verifyJWT");
 
 router
   .route("/")
-  .get(verifyJWT, orderController.getOrders)
+  .get(orderController.getOrders)
   .post(orderController.createNewOrder);
 
 router.route("/single/:id").delete(orderController.deleteOrder);

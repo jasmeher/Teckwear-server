@@ -77,7 +77,10 @@ const createProduct = asyncHandler(async (req, res) => {
 
   //Check if product already exists
 
-  const duplicate = await Product.findOne({ BIproductname }).lean().exec();
+  const duplicate = await Product.findOne({ BIproductname })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
 
   if (duplicate) {
     return res.status(409).json({ message: "Duplicate Product name!" });
@@ -149,7 +152,10 @@ const editProduct = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Product not found!" });
   }
   //check duplicate
-  const duplicate = await Product.findOne({ BIproductname }).lean().exec();
+  const duplicate = await Product.findOne({ BIproductname })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
 
   //Allow update to original user
   if (duplicate && duplicate?._id.toString() !== id) {
