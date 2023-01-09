@@ -63,8 +63,8 @@ const createNewOrder = asyncHandler(async (req, res) => {
     payment_method_types: ["card"],
     customer_email: email,
     mode: "payment",
-    success_url: `http://localhost:3000/?success=true&session={CHECKOUT_SESSION_ID}`,
-    cancel_url: "http://localhost:3000/?cancelled=true",
+    success_url: `https://teckwear.onrender.com/?success=true&session={CHECKOUT_SESSION_ID}`,
+    cancel_url: "https://teckwear.onrender.com/?cancelled=true",
     line_items: lineItems,
     shipping_address_collection: { allowed_countries: ["US", "IN", "CA"] },
     shipping_options: [
